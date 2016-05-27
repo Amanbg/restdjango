@@ -18,25 +18,40 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.models import User
-from restapp.models import People
+from restapp import views
+from rest_framework.routers import DefaultRouter
 from rest_framework import routers, serializers, viewsets
+from restapp.views import UserViewSet, PeopleViewSet,api_root
+from rest_framework import renderers
 
 
-# Serializers define the API representation.
-class PeopleSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = People
-        fields = ('first_name', 'last_name', 'emailid', 'contact','created_on')
+people_list = PeopleViewSet.as_view({
+        'get':'list',
+        'post':'create'
+    })
+people_detail = PeopleViewSet.as_view({
+    'get':'retrieve',
+    'put':'update',
+    'patch':'partial_update',
+    'delete':'destroy'
+    })
 
+people_highlight = PeopleViewSet.as_view({
+    'get':'highlight',
+    }, renderer_classes = [renderers.StaticHTMLRenderer])
 
-# ViewSets define the view behavior.
-class PeopleViewSet(viewsets.ModelViewSet):
-    queryset = People.objects.all()
-    serializer_class = PeopleSerializer
+user_list = UserViewSet.as_view({
+    'get':'list'
+    })
+user_detail = UserViewSet.as_view({
+    'get':'retrieve'
+    })
+
 
 # Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'people', PeopleViewSet)
+router = DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'peoples', views.PeopleViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -45,7 +60,6 @@ urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^',include('restapp.urls')),
 
 ] + static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT)
