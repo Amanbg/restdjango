@@ -31,16 +31,20 @@ class Recruiter(models.Model):
         (FEMALE, 'Female'),
     )
     gender = models.CharField(max_length=6, choices=GENDER, default='Male')
-    contact = models.CharField(max_length=10)
+    contact = models.CharField(
+        max_length=10,
+        help_text=_('Must contain10 digits only'))
     email_id = models.EmailField(max_length=40)
+    company_name = models.CharField(max_length=60)
     date_joined = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return self.first_name + " " + self.last_name
+        return self.company_name
 
 
 class Jobs(models.Model):
-    recruiter = models.ForeignKey(Recruiter, related_name='job_post')
+    # recruiter = models.ForeignKey(Recruiter, related_name='job_post')
+    company = models.ForeignKey(Recruiter, related_name='company')
     jobtitle = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
     exp_required = models.IntegerField(default=0)
@@ -50,7 +54,7 @@ class Jobs(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return self.jobtitle
+        return self.jobtitle + " " + self.company
 
 
 class Candidate(models.Model):
@@ -71,10 +75,13 @@ class Candidate(models.Model):
     )
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
-    contact = models.CharField(max_length=10)
+    contact = models.CharField(
+        max_length=10,
+        help_text=_('Must contain10 digits only'))
     email_id = models.EmailField(max_length=40)
     apply_on = models.DateTimeField(auto_now_add=True)
-    apply_to = models.ForeignKey(Jobs, related_name='apply_to_job')
+    apply_for = models.ForeignKey(Jobs, related_name='apply_for')
+    recruiter = models.ForeignKey(Recruiter, related_name='recruiting')
 
     def __unicode__(self):
-        return self.first_name+" "+self.last_name
+        return self.first_name + " " + self.last_name

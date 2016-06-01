@@ -1,8 +1,14 @@
 from restapp.models import Recruiter, Candidate, Jobs
-from restapp.serializers import RecruiterSerializer, JobsSerializer, CandidateSerializer
+from restapp.serializers import UserSerializer, RecruiterSerializer, JobsSerializer, CandidateSerializer
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import viewsets
+from django.contrib.auth.models import User
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class RecruiterViewSet(viewsets.ModelViewSet):

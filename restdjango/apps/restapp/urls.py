@@ -4,6 +4,8 @@ from restapp import views
 
 
 urlpatterns = [
+    url(r'^users/$', views.UserList.as_view(), name='user_list'),
+    url(r'^users/$', views.UserDetail.as_view(), name='user_detail'),
     url(r'^recruiters/$', views.RecruiterList.as_view(), name='recruiter-list'),
     url(r'^recruiters/(?P<pk>[0-9]+)/$', views.RecruiterDetail.as_view(), name='recruiter-detail'),
     url(r'^jobs/$', views.JobsList.as_view(), name='jobs-list'),
@@ -12,6 +14,3 @@ urlpatterns = [
     url(r'^candidates/(?P<pk>[0-9]+)/$', views.CandidateDetail.as_view(), name='candidate-detail'),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
-# urlpatterns += [
-#   url(r'^api-auth/', include('rest_framework.urls',namespace='rest_framework')),
-# ]

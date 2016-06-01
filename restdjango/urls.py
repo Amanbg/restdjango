@@ -18,9 +18,22 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.models import User
-from restapp.views import RecruiterViewSet, JobsViewSet, CandidateViewSet
+from restapp.views import UserViewSet, RecruiterViewSet, JobsViewSet, CandidateViewSet
 from rest_framework.routers import DefaultRouter
 from restapp import views
+
+
+user_list = UserViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+    })
+
+user_detail = UserViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+    })
 
 recruiter_list = RecruiterViewSet.as_view({
     'get': 'list',
@@ -59,6 +72,7 @@ candidate_detail = CandidateViewSet.as_view({
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = DefaultRouter()
+router.register(r'users', views.UserViewSet)
 router.register(r'recruiters', views.RecruiterViewSet)
 router.register(r'jobs', views.JobsViewSet)
 router.register(r'candidates', views.CandidateViewSet)

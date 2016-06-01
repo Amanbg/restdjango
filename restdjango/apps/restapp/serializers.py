@@ -1,5 +1,12 @@
 from rest_framework import serializers
 from restapp.models import Recruiter, Candidate, Jobs
+from django.contrib.auth.models import User
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url', 'username', 'email', 'is_staff')
 
 
 class RecruiterSerializer(serializers.ModelSerializer):
@@ -11,10 +18,10 @@ class RecruiterSerializer(serializers.ModelSerializer):
 class JobsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jobs
-        fields = ('url', 'recruiter', 'jobtitle', 'created_on', 'is_active', 'exp_required', 'salary')
+        fields = ('url', 'company', 'jobtitle', 'created_on', 'is_active', 'exp_required', 'salary')
 
         def create(self, validated_data):
-            jobs = Jobs.objects.create(validated_data['recruiter'])
+            jobs = Jobs.objects.create(validated_data['company'])
             jobs.save()
             return jobs
 
@@ -22,9 +29,9 @@ class JobsSerializer(serializers.ModelSerializer):
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidate
-        fields = ('url', 'username', 'first_name', 'last_name', 'apply_to', 'apply_on', 'email_id', 'contact')
+        fields = ('url', 'username', 'first_name', 'last_name', 'apply_for', 'apply_on', 'recruiter', 'email_id', 'contact')
 
         def create(self, validated_data):
-            candidate = Candidate.objects.create(validated_data['apply_to'])
+            candidate = Candidate.objects.create(validated_data['apply_for'], validated_data['recruiter'])
             candidate.save()
             return candidate
