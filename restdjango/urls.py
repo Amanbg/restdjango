@@ -18,40 +18,50 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.models import User
-from restapp import views
+from restapp.views import RecruiterViewSet, JobsViewSet, CandidateViewSet
 from rest_framework.routers import DefaultRouter
-from rest_framework import routers, serializers, viewsets
-from restapp.views import UserViewSet, PeopleViewSet,api_root
-from rest_framework import renderers
+from restapp import views
+
+recruiter_list = RecruiterViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+recruiter_detail = RecruiterViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
 
 
-people_list = PeopleViewSet.as_view({
-        'get':'list',
-        'post':'create'
-    })
-people_detail = PeopleViewSet.as_view({
-    'get':'retrieve',
-    'put':'update',
-    'patch':'partial_update',
-    'delete':'destroy'
-    })
+jobs_list = JobsViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+jobs_detail = JobsViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
 
-people_highlight = PeopleViewSet.as_view({
-    'get':'highlight',
-    }, renderer_classes = [renderers.StaticHTMLRenderer])
-
-user_list = UserViewSet.as_view({
-    'get':'list'
-    })
-user_detail = UserViewSet.as_view({
-    'get':'retrieve'
-    })
+candidate_list = CandidateViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+candidate_detail = CandidateViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
 
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'peoples', views.PeopleViewSet)
+router.register(r'recruiters', views.RecruiterViewSet)
+router.register(r'jobs', views.JobsViewSet)
+router.register(r'candidates', views.CandidateViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

@@ -1,17 +1,17 @@
-from django.conf.urls import url, include
+from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 from restapp import views
 
-urlpatterns = [
-	url(r'^$',views.api_root),
-	url(r'^people/(?P<pk>[0-9]+)/highlight/$',views.PeopleHighlight.as_view(), name='people-highlight'),
-	url(r'^users/$',views.UserList.as_view(), name='user-list'),
-	url(r'^users/(?P<pk>[0-9]+)/$',views.UserDetail.as_view(), name='user-detail'),
-	url(r'^people/$',views.PeopleList.as_view(), name='people-list'),
-	url(r'^people/(?P<pk>[0-9]+)/$',views.PeopleDetail.as_view(), name='people-detail'),
 
+urlpatterns = [
+    url(r'^recruiters/$', views.RecruiterList.as_view(), name='recruiter-list'),
+    url(r'^recruiters/(?P<pk>[0-9]+)/$', views.RecruiterDetail.as_view(), name='recruiter-detail'),
+    url(r'^jobs/$', views.JobsList.as_view(), name='jobs-list'),
+    url(r'^jobs/(?P<pk>[0-9]+)/$', views.JobsDetail.as_view(), name='jobs-detail'),
+    url(r'^candidates/$', views.CandidateList.as_view(), name='candidate-list'),
+    url(r'^candidates/(?P<pk>[0-9]+)/$', views.CandidateDetail.as_view(), name='candidate-detail'),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
 # urlpatterns += [
-# 	url(r'^api-auth/', include('rest_framework.urls',namespace='rest_framework')),
+#   url(r'^api-auth/', include('rest_framework.urls',namespace='rest_framework')),
 # ]

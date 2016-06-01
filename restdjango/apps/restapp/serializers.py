@@ -1,19 +1,30 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
-from restapp.models import People
+from restapp.models import Recruiter, Candidate, Jobs
 
-class PeopleSerializer(serializers.HyperlinkedModelSerializer):
-	owner = serializers.ReadOnlyField(source='owner.username')
-	highlight = serializers.HyperlinkedIdentityField(view_name='people-highlight', format='html')
 
-	class Meta:
-		model = People
-		fields = ('url','highlight','owner',
-					'first_name','last_name','contact','emailid','created_on')
+class RecruiterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recruiter
+        fields = ('url', 'username', 'first_name', 'last_name', 'gender', 'contact', 'email_id', 'date_joined')
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-	# peoples = serializers.HyperlinkedRelatedField(many=True, view_name='people-detail',read_only=True)
 
-	class Meta:
-		model = User
-		fields = ('url','username','email','is_staff')
+class JobsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Jobs
+        fields = ('url', 'recruiter', 'jobtitle', 'created_on', 'is_active', 'exp_required', 'salary')
+
+        def create(self, validated_data):
+            jobs = Jobs.objects.create(validated_data['recruiter'])
+            jobs.save()
+            return jobs
+
+
+class CandidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Candidate
+        fields = ('url', 'username', 'first_name', 'last_name', 'apply_to', 'apply_on', 'email_id', 'contact')
+
+        def create(self, validated_data):
+            candidate = Candidate.objects.create(validated_data['apply_to'])
+            candidate.save()
+            return candidate

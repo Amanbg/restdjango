@@ -1,37 +1,59 @@
-from rest_framework.decorators import api_view
-from rest_framework.decorators import detail_route
-from rest_framework.response import Response
-from rest_framework import renderers
-from restapp.models import People
+from restapp.models import Recruiter, Candidate, Jobs
+from restapp.serializers import RecruiterSerializer, JobsSerializer, CandidateSerializer
 from rest_framework import generics
-from restapp.serializers import PeopleSerializer
-from restapp.serializers import UserSerializer
 from rest_framework import permissions
-from django.contrib.auth.models import User
 from rest_framework import viewsets
 
 
-@api_view(['GET','POST'])
-def api_root(request, format=None):
-	return Response({
-		'users':reverse('user-list',request=request , format=format),
-		'people':reverse('people-list',request=request, format=format)
-		})
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class RecruiterViewSet(viewsets.ModelViewSet):
 
-	queryset = User.objects.all()
-	serializer_class = UserSerializer
+    queryset = Recruiter.objects.all()
+    serializer_class = RecruiterSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-class PeopleViewSet(viewsets.ModelViewSet):
-	
-	queryset = People.objects.all()
-	serializer_class = PeopleSerializer
-	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-	@detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
-	def highlight(self, request, *args, **kwargs):
-		people= self.get_object()
-		return Response(people.highlighted)
+class JobsViewSet(viewsets.ModelViewSet):
 
-	def perform_create(self, serializer):
-		serializer.save(owner=self.request.user)
+    queryset = Jobs.objects.all()
+    serializer_class = JobsSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class CandidateViewSet(viewsets.ModelViewSet):
+
+    queryset = Candidate.objects.all()
+    serializer_class = CandidateSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+# class RecruiterList(generics.ListCreateAPIView):
+#     queryset = Recruiter.objects.all()
+#     serializer_class = RecruiterSerializer
+
+
+# class RecruiterDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Recruiter.objects.all()
+#     serializer_class = RecruiterSerializer
+#     permission_classes = (permissions.IsAuthenticatedOrReadonly,)
+
+
+# class JobsList(generics.ListCreateAPIView):
+#     queryset = Jobs.objects.all()
+#     serializer_class = JobsSerializer
+
+
+# class JobsDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Jobs.objects.all()
+#     serializer_class = JobsSerializer
+#     permission_classes = (permissions.IsAuthenticatedOrReadonly,)
+
+
+# class CandidateList(generics.ListCreateAPIView):
+#     queryset = Candidate.objects.all()
+#     serializer_class = CandidateSerializer
+
+
+# class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Candidate.objects.all()
+#     serializer_class = CandidateSerializer
+#     permission_classes = (permissions.IsAuthenticatedOrReadonly,)

@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.core import validators
+from django.utils.translation import ugettext_lazy as _
 
 
 # Create your models here.
@@ -23,7 +24,13 @@ class Recruiter(models.Model):
     )
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
-    gender = models.CharField(max_length=12)
+    MALE = 'Male'
+    FEMALE = 'Female'
+    GENDER = (
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+    )
+    gender = models.CharField(max_length=6, choices=GENDER, default='Male')
     contact = models.CharField(max_length=10)
     email_id = models.EmailField(max_length=40)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -33,14 +40,14 @@ class Recruiter(models.Model):
 
 
 class Jobs(models.Model):
-    recruiter = models.ForeignKey(Recruiter, related_name='job-post')
+    recruiter = models.ForeignKey(Recruiter, related_name='job_post')
     jobtitle = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
-    job_posted_on = models.DateTimeField(auto_now_add=True)
     exp_required = models.IntegerField(default=0)
     salary = models.IntegerField(default=500000, error_messages={
         'salary': _("Only Digits allowed")
         })
+    created_on = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return self.jobtitle
@@ -67,7 +74,7 @@ class Candidate(models.Model):
     contact = models.CharField(max_length=10)
     email_id = models.EmailField(max_length=40)
     apply_on = models.DateTimeField(auto_now_add=True)
-    apply_to = models.ForeignKey(Jobs, related_name='apply-to-job')
+    apply_to = models.ForeignKey(Jobs, related_name='apply_to_job')
 
     def __unicode__(self):
         return self.first_name+" "+self.last_name
