@@ -29,7 +29,7 @@ class Recruiter(models.Model):
     date_joined = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return self.first_name + self.last_name
+        return self.first_name + " " + self.last_name
 
 
 class Jobs(models.Model):
@@ -44,3 +44,30 @@ class Jobs(models.Model):
 
     def __unicode__(self):
         return self.jobtitle
+
+
+class Candidate(models.Model):
+    username = models.CharField(
+        max_length=20,
+        unique=True,
+        help_text=_('Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[
+            validators.RegexValidator(
+                r'^[\w.@+-]+$',
+                _('Enter a valid username. This value may contain only '
+                  'letters, numbers ' 'and @/./+/-/_ characters.')
+            ),
+        ],
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    contact = models.CharField(max_length=10)
+    email_id = models.EmailField(max_length=40)
+    apply_on = models.DateTimeField(auto_now_add=True)
+    apply_to = models.ForeignKey(Jobs, related_name='apply-to-job')
+
+    def __unicode__(self):
+        return self.first_name+" "+self.last_name
